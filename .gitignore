@@ -1,0 +1,4 @@
+# Contains private data
+/.env
+/docker-compose.override.yml
+/eyewiki-google-key.json

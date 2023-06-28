@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<structure>
+
+	<row class="sitenotice-row">
+		<cell class="col">
+			<component type="SiteNotice"></component>
+		</cell>
+	</row>
+
+	<grid>
+		<row class="bottom-buffer">
+			<cell span="6">
+					<component type="Html"><![CDATA[
+		<div style="float: left; margin-right: 20px;"><a href="//aao.org"><img id="aao-logo" src="/w/extensions/EyeWiki/skins/chameleon/AAO_Logo.png"></a></div>
+		]]>
+					</component>
+					<component type="Logo"></component>
+			</cell>
+			<cell span="6">
+				<row class="bottom-buffer">
+					<cell span="12">
+						<component type="PersonalTools"></component>
+					</cell>
+				</row>
+				<row>
+					<cell span="12">
+						<component type="SearchBar"></component>
+					</cell>
+				</row>
+
+			</cell>
+		</row>
+
+		<row>
+			<cell span="12">
+				<component type="NavbarHorizontal">
+                    <component type="NavMenu" flatten="navigation"></component>
+				</component>
+			</cell>
+		</row>
+
+		<row>
+			<cell span="12">
+				<component type="PageTools"></component>
+			</cell>
+		</row>
+
+		<row>
+			<cell span="12">
+				<component type="MainContent"></component>
+			</cell>
+		</row>
+
+		<row>
+			<cell span="12">
+				<component type="ToolbarHorizontal"></component>
+			</cell>
+		</row>
+
+		<row>
+			<cell span="12">
+				<component type="FooterInfo"></component>
+			</cell>
+		</row>
+
+		<row>
+			<cell span="6">
+				<component type="FooterPlaces"></component>
+			</cell>
+			<cell span="6">
+				<component type="FooterIcons"></component>
+			</cell>
+		</row>
+	</grid>
+</structure>

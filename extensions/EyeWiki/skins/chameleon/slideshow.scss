@@ -1,0 +1,150 @@
+/* Slideshow */
+
+/*#eyewiki-slideshow {
+   max-height:430px
+}*/
+#eyewiki-slideshow, #eyewiki-slideshow * {
+   max-width:700px;
+}
+@media screen and ( min-width: 768px ) and (max-width: 1200px ) {
+.page-Main_Page #eyewiki-slideshow,
+.page-Main_Page #eyewiki-slideshow * {
+	max-width: 100%;
+}
+}
+.spotlight-main {
+   border:0;
+}
+
+
+.spotlight-main .carousel-indicators {
+	left: 0;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 0;
+	text-align: center;
+	width: 100%
+}
+
+.spotlight-main .carousel-inner .item a {
+	display: block;
+	width: 100%
+}
+
+.spotlight-main .carousel-inner .item .carousel-caption {
+	position: relative;
+	text-align: left;
+	text-shadow: none;
+	color: inherit;
+	background: #fff;
+	left: 0;
+	right: 0;
+	padding-top: 16px;
+	height: 65px;
+}
+
+.spotlight-main .carousel-indicators li {
+	border-color: #ccc;
+	background-color: #CCC;
+	margin-bottom: 1px!important;
+	border-radius: 10px !important
+}
+
+.spotlight-main .carousel-indicators>li.active {
+	margin: 1px 4px;
+	background-color: #351f65;
+	border-color: #351f65;
+	width: 10px;
+	height: 10px
+}
+
+.spotlight-main .carousel-inner .item .carousel-caption h4 {
+	cursor: pointer;
+	font-family: "Gotham SSm A", "Gotham SSm B";
+	font-size: 23px;
+	margin: 0;
+	font-weight: 400 !important;
+}
+
+.spotlight-main .carousel-inner .item .carousel-caption a h4:hover,
+.spotlight-main .carousel-inner .item .carousel-caption p a:hover {
+	text-decoration: underline
+}
+
+.spotlight-main .carousel-inner .item .carousel-caption a:hover {
+	text-decoration: none
+}
+
+.spotlight-main .carousel-control {
+	width: 10%
+}
+
+.spotlight-main .carousel-control.left {
+	width: 10%!important;
+	background: 0;
+	color: #FFF;
+	filter: none;
+	height: 72%;
+	left: 20px;
+	top: 20px;
+	opacity: 1;
+	text-shadow: none
+}
+
+.spotlight-main .carousel-control.right {
+	width: 8%!important;
+	background: 0;
+	color: #FFF;
+	filter: none;
+	height: 72%;
+	right: 20px;
+	top: 20px;
+	opacity: 1;
+	text-shadow: none
+}
+
+@media(max-width:767px){
+  .spotlight-main .carousel-inner .item .carousel-caption h4 {
+	 font-size:20px
+  }
+}
+
+
+
+@media(max-width:480px) {
+	.spotlight-main {
+		height: auto!important
+	}
+	.spotlight-main .carousel-inner .item .carousel-caption {
+		left: 0;
+		right: 0;
+		top: auto;
+	}
+	.spotlight-main .carousel-inner .item .carousel-caption h4 {
+		font-size: 18px;
+		margin-bottom: 0;
+		margin-top: 0
+	}
+	.spotlight-main .carousel-control.right,
+	.spotlight-main .carousel-control.left {
+		height: 60%
+	}
+	.spotlight-main .carousel-indicators {
+		display: none
+	}
+	.spotlight-main .carousel-inner>.item>a>img,
+	.spotlight-main .carousel-inner>.item img {
+		margin-left: 0!important;
+		width: 100%!important;
+		height: auto!important
+	}
+	.spotlight-main .carousel-control .glyphicon-chevron-left,
+	.spotlight-main .carousel-control .glyphicon-chevron-right {
+		top: 45%
+	}
+}
+
+[data-target="#carousel-main"] {
+	visibility: hidden;
+}
+

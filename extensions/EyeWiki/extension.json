@@ -1,0 +1,38 @@
+{
+	"name": "EyeWiki",
+	"type": "other",
+	"author": [
+		"Ike Hecht for [http://www.wikiworks.com WikiWorks]"
+	],
+	"version": "0.2",
+	"url": "http://www.wikiworks.com/",
+	"description": "Special customizations for EyeWiki",
+	"requires": {
+		"MediaWiki": ">= 1.29.0"
+	},
+	"AutoloadClasses": {
+		"EyeWiki": "EyeWiki.php"
+	},
+	"Hooks": {
+		"BeforePageDisplay": "EyeWiki::onBeforePageDisplay"
+	},
+	"ResourceModules": {
+		"ext.eyeWiki": {
+			"scripts": "skins/chameleon/eyewiki.js",
+			"styles": "skins/monobook/ext.eyeWiki.css"
+		},
+		"ext.eyeWiki.webtrends": {
+			"scripts": "webtrends.js",
+			"position": "top"
+		},
+		"ext.eyeWiki.slideshow": {
+			"scripts": "slideshow.js"
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": "EyeWiki"
+	},
+	"callback": "EyeWiki::init",
+	"manifest_version": 2
+}

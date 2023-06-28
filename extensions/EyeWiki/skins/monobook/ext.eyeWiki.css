@@ -1,0 +1,12 @@
+#f-poweredbyico, #f-copyrightico {
+	display: none;
+}
+body.page-Main_Page h1.firstHeading {
+	display:none;
+}
+#t-contributors  {
+	display:none;
+}
+html:not(.ve-activated) body.page-Main_Page div#content {
+	padding: 0 1em 1em;
+}
