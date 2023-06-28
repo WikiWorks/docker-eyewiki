@@ -1,0 +1,27 @@
+[submodule "extensions/CategoryWatch"]
+	path = extensions/CategoryWatch
+	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/CategoryWatch
+[submodule "extensions/CiteDrawer"]
+	path = extensions/CiteDrawer
+	url = https://github.com/wikimedia/mediawiki-extensions-CiteDrawer.git
+[submodule "extensions/EyeWikiPreferences"]
+	path = extensions/EyeWikiPreferences
+	url = git@github.com:WikiTeq/mediawiki-extensions-EyeWikiPreferences.git
+[submodule "extensions/HitCounters"]
+	path = extensions/HitCounters
+	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/HitCounters
+[submodule "extensions/MetaMaster"]
+	path = extensions/MetaMaster
+	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/MetaMaster
+[submodule "extensions/RightFunctions"]
+	path = extensions/RightFunctions
+	url = https://github.com/wikimedia/mediawiki-extensions-RightFunctions.git
+[submodule "extensions/ShowMe"]
+	path = extensions/ShowMe
+	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/ShowMe
+[submodule "extensions/UserExport"]
+	path = extensions/UserExport
+	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/UserExport
+[submodule "extensions/YouTube"]
+	path = extensions/YouTube
+	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/YouTube
