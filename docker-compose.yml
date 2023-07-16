@@ -15,7 +15,7 @@ services:
       - ./_data/mysql:/var/lib/mysql
 
   web:
-    image: ghcr.io/canastawiki/canasta:1.39.1-20230628-257
+    image: ghcr.io/canastawiki/canasta:1.39.1-20230716-262
     restart: unless-stopped
     links:
       - db
