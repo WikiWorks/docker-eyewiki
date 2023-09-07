@@ -138,3 +138,14 @@ $wgJobRunRate = 0;
 
 wfLoadExtension( 'Scribunto' );
 wfLoadExtension( 'SemanticScribunto' );
+
+$wgHooks['GetPreferences'][] = static function ( $user, &$preferences ) {
+	// A checkbox
+	$preferences['newsletter'] = [
+		'type' => 'toggle',
+		'label' => 'Send me the EyeWiki newsletter',
+		'section' => 'personal/email'
+	];
+	return true;
+};
+$wgDefaultUserOptions['newsletter'] = true;

@@ -156,7 +156,6 @@ $extensionsJSON = [
 	'EditAccount',
 	'Elastica',
 	'ExternalData',
-#	'EyeWikiPreferences',
 #	'GTag',
 	'GoogleAnalyticsMetrics',
 	'HitCounters',

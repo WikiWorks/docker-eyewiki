@@ -4,9 +4,6 @@
 [submodule "extensions/CiteDrawer"]
 	path = extensions/CiteDrawer
 	url = https://github.com/wikimedia/mediawiki-extensions-CiteDrawer.git
-[submodule "extensions/EyeWikiPreferences"]
-	path = extensions/EyeWikiPreferences
-	url = git@github.com:WikiTeq/mediawiki-extensions-EyeWikiPreferences.git
 [submodule "extensions/HitCounters"]
 	path = extensions/HitCounters
 	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/HitCounters
