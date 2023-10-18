@@ -149,3 +149,15 @@ $wgHooks['GetPreferences'][] = static function ( $user, &$preferences ) {
 	return true;
 };
 $wgDefaultUserOptions['newsletter'] = true;
+
+if ( !empty( getenv( 'SMTP_HOST') ) ) {
+	$wgSMTP = [
+		'host' => getenv('SMTP_HOST'),
+		'IDHost' => getenv('SMTP_HOST'),
+		'localhost' => getenv('SMTP_HOST'),
+		'port' => getenv('SMTP_PORT'),
+		'auth' => true,
+		'username' => getenv('SMTP_USERNAME'),
+		'password' => getenv('SMTP_PASSWORD'),
+	];
+}

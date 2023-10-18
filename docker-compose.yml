@@ -15,7 +15,7 @@ services:
       - ./_data/mysql:/var/lib/mysql
 
   web:
-    image: ghcr.io/canastawiki/canasta:1.39.1-20230716-262
+    image: ghcr.io/canastawiki/canasta:wikiteq-4147bec
     restart: unless-stopped
     links:
       - db
@@ -34,6 +34,11 @@ services:
       - MW_SITEMAP_SUBDIR
       - MW_SITEMAP_IDENTIFIER
       - MW_SENTRY_DSN
+      - SMTP_HOST
+      - SMTP_PORT
+      - SMTP_USERNAME
+      - SMTP_PASSWORD
+      - PASSWORD_SENDER
     volumes:
       - ./extensions:/var/www/mediawiki/w/user-extensions
       - ./skins:/var/www/mediawiki/w/user-skins
@@ -84,6 +89,36 @@ services:
        - ./_data/varnish:/data
     tmpfs:
       - /var/lib/varnish:exec
+
+  # https://hub.docker.com/_/composer
+  massmessage:
+    image: composer:2.2
+    restart: unless-stopped
+    volumes:
+      - ./eyewiki-massmessage-apiscripts:/app
+    command: "sleep infinity"
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.massmessage.schedule: "@every 30m"
+      #ofelia.job-exec.massmessage.schedule: "0 11 1-7 * *"
+      ofelia.job-exec.massmessage.command: "bash run.sh"
+      ofelia.job-exec.massmessage.no-overlap: true
+
+  # https://github.com/mcuadros/ofelia
+  ofelia:
+    image: mcuadros/ofelia:39bca16
+    links:
+      - massmessage
+    depends_on:
+      - massmessage
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./logs/ofelia:/var/log/ofelia
+    labels:
+      ofelia.enabled: "true"
+      ofelia.save-folder: "/var/log/ofelia"
+      ofelia.save-only-on-error: false
 
 volumes:
   elasticsearch:
