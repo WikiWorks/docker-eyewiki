@@ -83,9 +83,4 @@ $(".ns-500 .section-editor, .page-API .section-editor").addClass("jumbotron");
 
 	}
 
-	/* Show My Portal sidebar link if it is valid */
-	var myPortalHref = $( '#n-My-Portal > a' ).attr( 'href' );
-	if ( myPortalHref && myPortalHref.indexOf( 'Portal' ) > 0 ) {
-		$( '#n-My-Portal' ).show();
-	}
 } )( jQuery ) );
