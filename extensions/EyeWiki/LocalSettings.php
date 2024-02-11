@@ -79,6 +79,13 @@ $wgGroupPermissions['sysop']['editsitecss'] = true;
 $wgGroupPermissions['*']['edit'] = false;
 
 /*
+ * This section restricts anyone other than members of the sysop group 
+ * from creating pages in the Main namespace. [MEYE-369]
+ */
+wfLoadExtension( 'Lockdown' );
+$wgNamespacePermissionLockdown[NS_MAIN]['create'] = [ 'sysop' ];
+
+/*
  * This section restricts anyone other than those with the "editotherthanmyuserpage" right
  * from editing any pages other than their own user page.
  */
