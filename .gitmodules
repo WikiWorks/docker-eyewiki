@@ -22,3 +22,6 @@
 [submodule "extensions/YouTube"]
 	path = extensions/YouTube
 	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/YouTube
+[submodule "extensions/EyeWikiPreferences"]
+	path = extensions/EyeWikiPreferences
+	url = https://github.com/WikiTeq/mediawiki-extensions-EyeWikiPreferences.git

@@ -47,7 +47,14 @@ $wgDBprefix = "";
 $wgDBserver = "db";
 $wgDBname = "mediawiki";
 $wgDBuser = "root";
-$wgDBpassword = "mediawiki";
+$wgDBpassword = getenv( 'MYSQL_PASSWORD' );
+if ( !$wgDBpassword ) {
+	if ( is_readable( '/run/secrets/db_password' ) ) {
+		$wgDBpassword = rtrim( file_get_contents( '/run/secrets/db_password' ) );
+	} elseif ( is_readable( '/run/secrets/db_root_password' ) ) {
+		$wgDBpassword = rtrim( file_get_contents( '/run/secrets/db_root_password' ) );
+	}
+}
 $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
 $wgDBmysql5 = true;
 
@@ -69,8 +76,8 @@ require_once("$IP/extensions/EyeWiki/LocalSettings.php");
 
 /******************* Core configuration ********************/
 
-$wgSentryDsn = getenv( 'MW_SENTRY_DSN' );
-$wgGoogleAnalyticsMetricsPath = '/var/www/eyewiki-1036-4bd0970ee9af.json';
+$wgSentryDsn = rtrim( file_get_contents( '/run/secrets/wgSentryDsn' ) );
+$wgGoogleAnalyticsMetricsPath = '/run/secrets/google_key';
 $wgGoogleAnalyticsMetricsEmail = '406809334386-o49bi6p7qk3701pm9arvu3elfpkh7t4a@developer.gserviceaccount.com';
 $wgGoogleAnalyticsMetricsViewId = '104606307';
 
@@ -150,14 +157,11 @@ $wgHooks['GetPreferences'][] = static function ( $user, &$preferences ) {
 };
 $wgDefaultUserOptions['newsletter'] = true;
 
-if ( !empty( getenv( 'SMTP_HOST') ) ) {
-	$wgSMTP = [
-		'host' => getenv('SMTP_HOST'),
-		'IDHost' => getenv('SMTP_HOST'),
-		'localhost' => getenv('SMTP_HOST'),
-		'port' => getenv('SMTP_PORT'),
-		'auth' => true,
-		'username' => getenv('SMTP_USERNAME'),
-		'password' => getenv('SMTP_PASSWORD'),
-	];
-}
+// Uses WikiTeq SMTP server for outgoing emails
+$wgSMTP = [
+	'host' => 'smtp.wikiteq.com',
+	'port'     => 587,
+	'auth'     => true,
+	'username' => 'eyewiki',
+	'password' => rtrim( file_get_contents( '/run/secrets/smtp_password' ) ),
+];

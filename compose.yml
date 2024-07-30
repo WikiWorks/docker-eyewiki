@@ -1,0 +1,162 @@
+
+services:
+  db:
+    image: docker.io/library/mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password --log-bin=binlog --expire_logs_days=3 --secure-file-priv=""
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE, fix error mbind: Operation not permitted
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_DATABASE=mediawiki
+    secrets:
+      - db_root_password
+    volumes:
+      - ./_initdb:/docker-entrypoint-initdb.d
+      - ./_data/mysql:/var/lib/mysql
+
+  web:
+    image: ghcr.io/canastawiki/canasta:wikiteq-28b440e4 # 1.39.8
+    restart: unless-stopped
+    extra_hosts:
+      - "gateway.docker.internal:host-gateway"
+    depends_on:
+      - db
+      - elasticsearch
+    environment:
+      # Sourced from .env
+      - MW_SITE_SERVER=${MW_SITE_SERVER?Variable MW_SITE_SERVER not set}
+      - PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE:-10M}
+      - PHP_POST_MAX_SIZE=${PHP_UPLOAD_MAX_FILESIZE:-10M}
+      - PHP_MAX_INPUT_VARS=${PHP_MAX_INPUT_VARS:-1000}
+      - MW_ENABLE_SITEMAP_GENERATOR # Enable it on the PROD wiki only! See WIK-1420
+      - PASSWORD_SENDER=noreply@${MW_SITE_FQDN?Variable MW_SITE_FQDN not set}
+      - MW_SITE_FQDN
+    secrets:
+      - db_root_password
+      - google_key
+      - smtp_password
+      - wgSentryDsn
+    volumes:
+      - ./_data/mediawiki:/mediawiki
+      - ./extensions:/var/www/mediawiki/w/user-extensions
+      - ./skins:/var/www/mediawiki/w/user-skins
+      - ./config:/mediawiki/config
+      - ./images:/mediawiki/images
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+
+  varnish:
+    image: pastakhov/varnish:7.0
+    restart: unless-stopped
+    networks:
+      - traefik-public
+      - default
+    depends_on:
+      - web
+    environment:
+      - VARNISH_SIZE=${VARNISH_SIZE:-1g}
+      - VARNISH_STORAGE_KIND=file
+    volumes:
+       - ./config/varnish:/etc/varnish:ro
+       - ./_data/varnish:/data
+    tmpfs:
+      - /var/lib/varnish:exec
+    labels:
+      # Enable Traefik for this service
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      # Set the domain name for the service
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.rule=Host(`${MW_SITE_FQDN?Variable MW_SITE_FQDN not set}`)
+      # Set http and https entrypoints for the service
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.entrypoints=websecure
+      # Connect the service to LE certs resolver
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.tls.certresolver=le
+      # Redirect www subdomain to base
+      # HTTPS
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-www-websecure.rule=Host(`www.$MW_SITE_FQDN`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-www-websecure.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-www-websecure.tls.certresolver=le
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-www-websecure.middlewares=${COMPOSE_PROJECT_NAME}_www_redirect
+      # HTTP
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-www-web.rule=Host(`www.$MW_SITE_FQDN`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-www-web.entrypoints=web
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-www-web.middlewares=${COMPOSE_PROJECT_NAME}_www_redirect
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-www-web.priority=100
+      # the redirect middleware
+      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}_www_redirect.redirectregex.regex=^https?://www\.(.*)
+      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}_www_redirect.redirectregex.replacement=https://$${1}
+
+  # https://hub.docker.com/_/composer
+  massmessage:
+    image: composer:2.2
+    restart: unless-stopped
+    depends_on:
+      - web
+    volumes:
+      - ./eyewiki-massmessage-apiscripts:/app
+    command: "sleep infinity"
+    environment:
+      # Sourced from .env
+      - MASSMESSAGE_LIVE_MODE # Set true on production
+      - MASSMESSAGE_SITE_URL=http://web/w
+      - MASSMESSAGE_BOT_USER
+      - MASSMESSAGE_BOT_PASSWORD_FILE=/run/secrets/massmessage_bot_password
+      - MASSMESSAGE_SPAMLIST_CATEGORY
+    secrets:
+      - massmessage_bot_password
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.massmessage.schedule: "@every 30m"
+      #ofelia.job-exec.massmessage.schedule: "0 11 1-7 * *"
+      ofelia.job-exec.massmessage.command: "bash run.sh"
+      ofelia.job-exec.massmessage.no-overlap: true
+
+  # https://github.com/mcuadros/ofelia
+  ofelia:
+    image: mcuadros/ofelia:6394070
+    depends_on:
+      massmessage:
+        condition: service_started
+        restart: true
+    command: daemon --docker -f label=com.docker.compose.project=${COMPOSE_PROJECT_NAME}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./logs/ofelia:/var/log/ofelia
+    labels:
+      ofelia.enabled: "true"
+      ofelia.save-folder: "/var/log/ofelia"
+      ofelia.save-only-on-error: false
+
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+  google_key:
+    file: ./secrets/google-key.json
+  massmessage_bot_password:
+    file: ./secrets/massmessage_bot_password.txt
+  smtp_password:
+    file: ./secrets/smtp_password.txt
+  wgSentryDsn:
+    file: ./secrets/wgSentryDsn.txt
+
+volumes:
+  elasticsearch:
+
+networks:
+  traefik-public:
+    external: true
