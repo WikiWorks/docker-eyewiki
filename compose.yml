@@ -17,7 +17,7 @@ services:
       - ./_data/mysql:/var/lib/mysql
 
   web:
-    image: ghcr.io/canastawiki/canasta:wikiteq-28b440e4 # 1.39.8
+    image: ghcr.io/canastawiki/canasta:wikiteq-985789c0 # 1.39.8
     restart: unless-stopped
     extra_hosts:
       - "gateway.docker.internal:host-gateway"
@@ -51,7 +51,7 @@ services:
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms${ES_MEMORY:-512m} -Xmx${ES_MEMORY:-512m}"
     ulimits:
       memlock:
         soft: -1
