@@ -200,7 +200,7 @@ $wgCiteDrawerEnableDesktop = false;
 
 #ConfirmEdit
 $wgCaptchaQuestions = [
-	'How many total thumbs do 5 people have? (spell out the number)' => 'ten'
+	'If a humans has 2 eyes, how many extraocular muscles does a person have? (spell out the number in lowercase)' => 'fourteen'
 ];
 $wgGroupPermissions['editor']['skipcaptcha'] = true;
 
