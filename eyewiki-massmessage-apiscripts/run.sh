@@ -1,5 +1,17 @@
 #!/bin/bash
 
+PHP_SCRIPT_NAME=$1
+
+if [ -z "$PHP_SCRIPT_NAME" ]; then
+    echo "Error: No php script name passed."
+    exit 1
+fi
+
+if [ ! -f "$PHP_SCRIPT_NAME" ]; then
+    echo "Error: File '$PHP_SCRIPT_NAME' does not exist."
+    exit 1
+fi
+
 isTrue() {
     case $1 in
         "True" | "TRUE" | "true" | 1)
@@ -44,10 +56,8 @@ if isTrue "$MASSMESSAGE_LIVE_MODE"; then
         echo "MASSMESSAGE_SPAMLIST_CATEGORY not set"
         exit 1
     fi
-    php MassMessageAPI.php --live
-    php stalepages.php --live
+    php "$PHP_SCRIPT_NAME" --live
 else
     # TEST MODE
-    php MassMessageAPI.php
-    php stalepages.php
+    php "$PHP_SCRIPT_NAME"
 fi

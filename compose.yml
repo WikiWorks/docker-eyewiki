@@ -122,9 +122,14 @@ services:
     labels:
       ofelia.enabled: "true"
       # At 11:00 on every day-of-month from 1 through 7 and on Friday.
-      ofelia.job-exec.massmessage.schedule: "0 11 1-7 * FRI"
-      ofelia.job-exec.massmessage.command: "bash run.sh"
+      ofelia.job-exec.massmessage.schedule: "0 11 1-7 * 5"
+      ofelia.job-exec.massmessage.command: "bash run.sh MassMessageAPI.php"
       ofelia.job-exec.massmessage.no-overlap: true
+      # At 11:00 every day
+      ofelia.job-exec.stalepages.schedule: "0 11 * * *"
+      ofelia.job-exec.stalepages.command: "bash run.sh stalepages.php"
+      ofelia.job-exec.stalepages.no-overlap: true
+
 
   # https://github.com/mcuadros/ofelia
   ofelia:
