@@ -121,8 +121,8 @@ services:
       - massmessage_bot_password
     labels:
       ofelia.enabled: "true"
-      ofelia.job-exec.massmessage.schedule: "@every 30m"
-      #ofelia.job-exec.massmessage.schedule: "0 11 1-7 * *"
+      # At 11:00 on every day-of-month from 1 through 7 and on Friday.
+      ofelia.job-exec.massmessage.schedule: "0 11 1-7 * FRI"
       ofelia.job-exec.massmessage.command: "bash run.sh"
       ofelia.job-exec.massmessage.no-overlap: true
 
