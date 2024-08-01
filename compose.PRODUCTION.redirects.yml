@@ -1,0 +1,17 @@
+services:
+  varnish:
+    labels:
+      #### Redirect www.bugsigdb.org to non www
+      # web
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_web-eyewiki-aao-org.rule=Host(`eyewiki.aao.org`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_web-eyewiki-aao-org.entrypoints=web
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_web-eyewiki-aao-org.middlewares=${COMPOSE_PROJECT_NAME}_eyewiki-aao-org_redirect
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_web-eyewiki-aao-org.priority=100
+      # websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_websecure-eyewiki-aao-org.rule=Host(`eyewiki.aao.org`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_websecure-eyewiki-aao-org.entrypoints=websecure
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_websecure-eyewiki-aao-org.tls.certresolver=le
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_websecure-eyewiki-aao-org.middlewares=${COMPOSE_PROJECT_NAME}_eyewiki-aao-org_redirect
+      # middlewares
+      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}_eyewiki-aao-org_redirect.redirectregex.regex=^https?://eyewiki\.aao\.org/(.*)
+      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}_eyewiki-aao-org_redirect.redirectregex.replacement=https://eyewiki.org/$${1}
