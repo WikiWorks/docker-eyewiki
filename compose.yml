@@ -33,6 +33,7 @@ services:
       - MW_ENABLE_SITEMAP_GENERATOR # Enable it on the PROD wiki only! See WIK-1420
       - PASSWORD_SENDER=eyewiki@aao.org
       - MW_SITE_FQDN
+      - APACHE_REMOTE_IP_HEADER=X-Real-Ip # Use IP passed by Traefik, see MEYE-401
     secrets:
       - db_root_password
       - google_key
