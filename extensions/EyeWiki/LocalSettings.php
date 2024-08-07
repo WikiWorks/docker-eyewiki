@@ -200,7 +200,7 @@ $wgCiteDrawerEnableDesktop = false;
 
 #ConfirmEdit
 $wgCaptchaQuestions = [
-	'If a humans has 2 eyes, how many extraocular muscles does a person have? (spell out the number in lowercase)' => 'fourteen'
+	'If a person has 2 eyes, how many extraocular muscles does a person have? (spell out the number in lowercase)' => 'fourteen'
 ];
 $wgGroupPermissions['editor']['skipcaptcha'] = true;
 
