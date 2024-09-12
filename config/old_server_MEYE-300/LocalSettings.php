@@ -1,4 +1,5 @@
 <?php
+IT WAS ADDED HERE TO KEEP HISTORY OF CHANGES
 // error_reporting( E_ALL | E_STRICT );
 // ini_set( "display_errors", 1 );
 // $wgShowExceptionDetails = true;
@@ -42,21 +43,10 @@ $wgUsePathInfo = true;
 ## The relative URL path to the skins directory
 $wgStylePath = "$wgScriptPath/skins";
 
-$wgDBtype = "mysql";
-$wgDBprefix = "";
-$wgDBserver = "db";
-$wgDBname = "mediawiki";
-$wgDBuser = "root";
-$wgDBpassword = getenv( 'MYSQL_PASSWORD' );
-if ( !$wgDBpassword ) {
-	if ( is_readable( '/run/secrets/db_password' ) ) {
-		$wgDBpassword = rtrim( file_get_contents( '/run/secrets/db_password' ) );
-	} elseif ( is_readable( '/run/secrets/db_root_password' ) ) {
-		$wgDBpassword = rtrim( file_get_contents( '/run/secrets/db_root_password' ) );
-	}
-}
-$wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
-$wgDBmysql5 = true;
+#$wgDBname = "eyewikidb";
+$wgDBname = "eyewiki";
+$wgDBuser = "eyewiki";
+$wgDBpassword = "eyewiki";
 
 ## Shared memory settings
 $wgMainCacheType = CACHE_ACCEL; //CACHE_NONE;
@@ -69,15 +59,49 @@ $wgSecretKey = "2cf482ee57877fc0508262824d9eedc17d09e48e3ce953c0e5a8adc843acd9de
 $wgUpgradeKey = "d9316e1c812933c8";
 
 # SemanticMediaWiki - needs to be here - called before other Semantic extensions
-wfLoadExtension( 'SemanticMediaWiki' );
-enableSemantics( getenv( 'MW_SITE_FQDN' ) );
+enableSemantics( 'eyewiki.org' );
 
 require_once("$IP/extensions/EyeWiki/LocalSettings.php");
 
 /******************* Core configuration ********************/
 
-$wgSentryDsn = rtrim( file_get_contents( '/run/secrets/wgSentryDsn' ) );
-$wgGoogleAnalyticsMetricsPath = '/run/secrets/google_key';
+
+
+# mail
+# @TODO:
+#!$wgSMTP = array(
+#! 'host'     => "192.168.2.225",//"psn.aao.org", // could also be an IP address. Where the SMTP server is located
+#! 'IDHost'   => "eyewikiorg",      // Generally this will be the domain name of your website (aka mywiki.org)
+#! 'port'     => 25,                 // Port to use when connecting to the SMTP server
+#!);
+
+# PreferencesMaster
+#!$wgHooks['PreferencesMasterFormatRow'][] = function( $preferenceKey, array &$preferences ) {
+#!      $user = User::newFromName( $preferences['label'] );
+#!      if ( $user->getEmail() ) {
+#!              $preferences['label'] .= " (" . $user->getEmail() . ")";
+#!      }
+#!};
+
+$wgVirtualRestConfig['modules']['parsoid'] = [
+	# once https://gerrit.wikimedia.org/r/583430 lands you can leave this blank
+	'url' => $wgServer . $wgScriptPath . '/rest.php',
+	'domain' => $wgServer,
+];
+
+$wgReadOnly = "The wiki is under a maintenance..";
+#$wgGroupPermissions['*']['edit'] = false;
+#$wgGroupPermissions['*']['createaccount'] = false;
+#$wgGroupPermissions['user']['edit'] = false;
+#$wgGroupPermissions['user']['createaccount'] = false;
+#$wgGroupPermissions['sysop']['edit'] = false;
+#$wgGroupPermissions['sysop']['createaccount'] = false;
+#$wgGroupPermissions['editor']['edit'] = false;
+#$wgGroupPermissions['editor']['createaccount'] = false;
+
+
+$wgSentryDsn = 'https://fef8fdb32b514274af1a7dfa34346edd:fc72e359b57b4e029aba4126523441c5@o1154502.ingest.sentry.io/6372226';
+$wgGoogleAnalyticsMetricsPath = '/var/www/eyewiki-1036-4bd0970ee9af.json';
 $wgGoogleAnalyticsMetricsEmail = '406809334386-o49bi6p7qk3701pm9arvu3elfpkh7t4a@developer.gserviceaccount.com';
 $wgGoogleAnalyticsMetricsViewId = '104606307';
 #$wgGoogleAnalyticsMetricsViewId = '4891091090'; # [MEYE-351]
@@ -146,23 +170,3 @@ $wgJobRunRate = 0;
 
 wfLoadExtension( 'Scribunto' );
 wfLoadExtension( 'SemanticScribunto' );
-
-$wgHooks['GetPreferences'][] = static function ( $user, &$preferences ) {
-	// A checkbox
-	$preferences['newsletter'] = [
-		'type' => 'toggle',
-		'label' => 'Send me the EyeWiki newsletter',
-		'section' => 'personal/email'
-	];
-	return true;
-};
-$wgDefaultUserOptions['newsletter'] = true;
-
-// Uses WikiTeq SMTP server for outgoing emails
-$wgSMTP = [
-	'host' => 'smtp.wikiteq.com',
-	'port'     => 587,
-	'auth'     => true,
-	'username' => 'eyewiki',
-	'password' => rtrim( file_get_contents( '/run/secrets/smtp_password' ) ),
-];

@@ -1,16 +1,21 @@
 <?php
-
+IT WAS ADDED HERE TO KEEP HISTORY OF CHANGES
 $wgSitename = "EyeWiki";
-#$wgServer = "https://eyewiki.org";
-$wgServer = getenv( 'MW_SITE_SERVER' );
+$wgServer = "https://eyewiki.org";
 $wgLogo = "$wgScriptPath/extensions/EyeWiki/skins/chameleon/EyeWiki_Logo.png";
 $wgEnableEmail = true;
 $wgEnableUserEmail = true; # UPO
 $wgEmergencyContact = "eyewiki@aao.org";
-$wgPasswordSender = getenv( 'PASSWORD_SENDER' );
+$wgPasswordSender = "eyewiki@aao.org";
 $wgEnotifUserTalk = true; # UPO
 $wgEnotifWatchlist = true; # UPO
 $wgEmailAuthentication = true;
+
+$wgDBtype = "mysql";
+$wgDBserver = "localhost";
+$wgDBprefix = "";
+$wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
+$wgDBmysql5 = true;
 
 $wgEnableUploads = true;
 $wgUseInstantCommons = false;
@@ -105,6 +110,9 @@ $wgHooks['userCan'][] = function ( Title &$title, User &$user, $action, &$result
 	}
 };
 
+# Upload locations - These settings were imposed by the old wiki
+$wgUploadPath = "{$wgScriptPath}/images/1";
+$wgUploadDirectory = "{$IP}/images/1/";
 # Allowed upload file types
 $wgFileExtensions = array_merge( $wgFileExtensions,
 	[ 'avi', 'ogv', 'mp4', 'm4v', 'webm' ]
@@ -135,9 +143,9 @@ $wgContentNamespaces[] = NS_USER; # Needed for PageForms autoedit
 
 /******************* Extensions inclusion *******************/
 $extensions = [
-#	'ContributorsEyewiki',
+#       'ContributorsEyewiki',
 	'EyeWiki',
-# 	'GoogleAPIClient', #formertly used by GoogleAnalyticsMetrics
+#       'GoogleAPIClient', #formertly used by GoogleAnalyticsMetrics
 	'SemanticDrilldown',
 ];
 foreach ( $extensions as $extension ) {
@@ -155,16 +163,16 @@ $extensionsJSON = [
 	'CookieWarning',
 	'ConfirmEdit',
 	'ConfirmEdit/QuestyCaptcha',
-#	'ContributionsList',                  NOT COMPATIBLE WITH 1.35
-#	'Contributors',
+#       'ContributionsList',                  NOT COMPATIBLE WITH 1.35
+#       'Contributors',
 	'DataTransfer',
 	'Description2',
 	'DismissableSiteNotice',
 	'EditAccount',
 	'Elastica',
 	'ExternalData',
-#	'EyeWikiPreferences',
-#	'GTag',
+#       'EyeWikiPreferences',
+#       'GTag',
 	'GoogleAnalyticsMetrics',
 	'HitCounters',
 	'MassMessage',
@@ -174,8 +182,8 @@ $extensionsJSON = [
 	'NewUserMessage',
 	'PageForms',
 	'ParserFunctions',
-#	'PreferencesMaster',
-#	'PreferencesList',
+#       'PreferencesMaster',
+#       'PreferencesList',
 	'Renameuser',
 	'ReplaceText',
 	'SemanticExtraSpecialProperties',
@@ -201,7 +209,7 @@ $wgCiteDrawerEnableDesktop = false;
 
 #ConfirmEdit
 $wgCaptchaQuestions = [
-	'If a person has 2 eyes, how many extraocular muscles does a person have? (spell out the number in lowercase)' => 'fourteen'
+	'If a humans has 2 eyes, how many extraocular muscles does a person have? (spell out the number in lowercase)' => 'fourteen'
 ];
 $wgGroupPermissions['editor']['skipcaptcha'] = true;
 
@@ -233,7 +241,7 @@ $wgPFEnableStringFunctions = true;
 $wgGroupPermissions['bureaucrat']['userexport'] = true;
 
 # VisualEditor
-#wfLoadExtension( 'Parsoid', "$IP/vendor/wikimedia/parsoid/extension.json" );
+wfLoadExtension( 'Parsoid', "$IP/vendor/wikimedia/parsoid/extension.json" );
 $wgDefaultUserOptions['visualeditor-enable'] = 1; // Enable by default for everybody
 $wgVisualEditorDisableForAnons = true; // Except anons (non-logged in users)
 $wgVisualEditorNamespaces = array_merge(
@@ -243,9 +251,6 @@ $wgVisualEditorNamespaces = array_merge(
 
 # CirrusSearch
 $wgSearchType = 'CirrusSearch';
-$wgCirrusSearchClusters = [
-	'default' => [ 'elasticsearch' ],
-];
 #!$wgDisableSearchUpdate = true;
 $wgCirrusSearchPhraseSuggestConfidence = 1.0;
 $wgCirrusSearchPhraseSuggestUseText = true;
@@ -300,7 +305,8 @@ $wgMaxImageArea = 10e7;
 
 wfLoadExtension( 'WikiEditor' );
 wfLoadExtension( 'CodeMirror' );
-wfLoadExtension( 'RightFunctions' );
+
+require_once "$IP/extensions/RightFunctions/RightFunctions.php";
 
 # GoogleAnalyticsMetrics
 $wgGoogleAnalyticsMetricsAllowed = [ 'pageviews' ];
@@ -319,7 +325,7 @@ $wgSDUUseJobQueue = false;
 
 wfLoadExtension('Variables');
 
-$wgGoogleAnalyticsMetricsExpiry = 3600*24;
+$wgGoogleAnalyticsMetricsExpiry = 4;
 
 $wgWidgetsCompileDir = "$IP/images/widgets/";
 
@@ -329,13 +335,13 @@ $wgActions['mcrrestore'] = false;
 $wgWhitelistRead = [];
 $wgWhitelistReadRegexp = [];
 
-#!wfLoadExtension('Sentry');
+wfLoadExtension('Sentry');
 
 require_once("$IP/extensions/EyeWiki/SkinSettings.php");
 
 #### Varnish related settings
 $wgUseCdn = true;
-$wgCdnServers = [ 'varnish:80' ];
+$wgCdnServers = [ '127.0.0.1:6081' ];
 $wgUsePrivateIPs = true;
 # Use HTTP protocol for internal connections like PURGE request to Varnish
 if ( strncasecmp( $wgServer, 'https://', 8 ) === 0 ) {
@@ -364,5 +370,9 @@ EOT;
 
 #$wgGTagHonorDNT = false;
 
-// EYE26-1, MEYE-419
+// EYE26-1
 wfLoadExtension( 'RetainedArticles' );
+// The line below needed for MW version 1.35 only
+$wgActions['delete'] = 'MediaWiki\Extension\RetainedArticles\OverwrittenDeleteAction';
+// TODO remove the line above for MW version 1.39
+

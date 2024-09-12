@@ -25,3 +25,6 @@
 [submodule "extensions/EyeWikiPreferences"]
 	path = extensions/EyeWikiPreferences
 	url = https://github.com/WikiTeq/mediawiki-extensions-EyeWikiPreferences.git
+[submodule "extensions/RetainedArticles"]
+	path = extensions/RetainedArticles
+	url = git@github.com:WikiTeq/mediawiki-extension-RetainedArticles.git
