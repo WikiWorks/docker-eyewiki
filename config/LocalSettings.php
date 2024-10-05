@@ -166,3 +166,11 @@ $wgSMTP = [
 	'username' => 'eyewiki',
 	'password' => rtrim( file_get_contents( '/run/secrets/smtp_password' ) ),
 ];
+
+// MEYE-425 Creates meta tag with the content of MediaWiki:Legal-notice-meta
+$wgHooks['BeforePageDisplay'][] = function( OutputPage &$out, Skin &$skin ) {
+    $metaName = 'legal_notice'; 
+    $metaContent = wfMessage( 'legal-notice-meta' )->text(); 
+    $metaTag = "<meta name=\"{$metaName}\" content=\"{$metaContent}\" />";
+    $out->addHeadItem( 'legal-notice-meta', $metaTag );
+};
