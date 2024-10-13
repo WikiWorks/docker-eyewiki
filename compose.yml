@@ -121,34 +121,22 @@ services:
     secrets:
       - massmessage_bot_password
     labels:
-      ofelia.enabled: "true"
-      # At 11:00 on every day-of-month from 1 through 7 and on Friday.
-      # NOT COMPATIBLE WITH CRON, SEE https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format
-      ofelia.job-exec.massmessage.schedule: "0 0 11 1-7 * FRI"
-      ofelia.job-exec.massmessage.command: "bash run.sh MassMessageAPI.php"
-      ofelia.job-exec.massmessage.no-overlap: true
+      # At 11:00 every first Friday
+      cron.massmessage.schedule: "0 11 * * FRI#1"
+      cron.massmessage.command: "bash run.sh MassMessageAPI.php"
       # At 11:00 every day
-      # NOT COMPATIBLE WITH CRON, SEE https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format
-      ofelia.job-exec.stalepages.schedule: "0 0 11 * * *"
-      ofelia.job-exec.stalepages.command: "bash run.sh stalepages.php"
-      ofelia.job-exec.stalepages.no-overlap: true
+      cron.stalepages.schedule: "0 11 * * *"
+      cron.stalepages.command: "bash run.sh stalepages.php"
 
-
-  # https://github.com/mcuadros/ofelia
-  ofelia:
-    image: mcuadros/ofelia:6394070
-    depends_on:
-      massmessage:
-        condition: service_started
-        restart: true
-    command: daemon --docker -f label=com.docker.compose.project=${COMPOSE_PROJECT_NAME}
+  # it uses "Golang Cron expression parser", see https://github.com/aptible/supercronic/tree/master/cronexpr
+  cron:
+    image: ghcr.io/wikiteq/cron:20241013-2e24f57
+    environment:
+      - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
+      - DEBUG=${CRON_DEBUG:-0}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./logs/ofelia:/var/log/ofelia
-    labels:
-      ofelia.enabled: "true"
-      ofelia.save-folder: "/var/log/ofelia"
-      ofelia.save-only-on-error: false
+      - ./logs/cron:/var/log/cron
 
 secrets:
   db_root_password:
