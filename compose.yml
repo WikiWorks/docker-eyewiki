@@ -130,7 +130,7 @@ services:
 
   # it uses "Golang Cron expression parser", see https://github.com/aptible/supercronic/tree/master/cronexpr
   cron:
-    image: ghcr.io/wikiteq/cron:20241013-2e24f57
+    image: ghcr.io/wikiteq/cron:20241025-6
     environment:
       - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
       - DEBUG=${CRON_DEBUG:-0}
