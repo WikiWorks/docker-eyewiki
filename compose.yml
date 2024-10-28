@@ -138,13 +138,51 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./logs/cron:/var/log/cron
 
+restic:
+    image: ghcr.io/wikiteq/restic-backup-docker:stream
+    restart: unless-stopped
+    depends_on:
+        - db
+    environment:
+        - MW_DB_USER=root
+        - MW_DB_PASS_FILE=/run/secrets/db_root_password
+        - MW_DB_NAME=$MW_DB_NAME
+        - RESTIC_TAG=backup_full
+        - BACKUP_CRON=0 1 * * 6
+        - CHECK_CRON=0 23 * * 5
+        - RESTIC_FORGET_ARGS=--prune --keep-weekly 1 --keep-monthly 2 --group-by paths
+        # pre-backup script
+        - RESTIC_PRE_BACKUP=if [ ! -d "/data" ]; then mkdir /data; fi && mysqldump -hdb -u$$MW_DB_USER -p$$MW_DB_PASS $$MW_DB_NAME | gzip -c > /data/database.sql.gz
+        # post-backup script
+        - RESTIC_POST_BACKUP=rm /data/database.sql.gz
+        - RESTIC_STREAM=yes
+        - RESTIC_STREAM_CMD=tar -cf - -C /data_mediawiki/ /data/database.sql.gz images
+        - RESTIC_STREAM_FILENAME=full.images.database.tar
+        - RESTIC_REPOSITORY_FILE=/run/secrets/restic_s3_repository
+        - RESTIC_PASSWORD_FILE=/run/secrets/restic_password
+        - AWS_SHARED_CREDENTIALS_FILE=/run/secrets/aws_credentials
+    secrets:
+        - aws_credentials
+        - db_root_password
+        - restic_password
+        - restic_s3_repository
+    volumes:
+        - ./_data/mediawiki:/data_mediawiki:ro
+        - ./_logs/restic:/var/log
+
 secrets:
+  aws_credentials:
+    file: ./secrets/aws_credentials.txt
   db_root_password:
     file: ./secrets/db_root_password.txt
   google_key:
     file: ./secrets/google-key.json
   massmessage_bot_password:
     file: ./secrets/massmessage_bot_password.txt
+  restic_password:
+    file: ./secrets/restic_password.txt
+  restic_s3_repository:
+    file: ./secrets/restic_s3_repository.txt
   smtp_password:
     file: ./secrets/smtp_password.txt
   wgSentryDsn:
