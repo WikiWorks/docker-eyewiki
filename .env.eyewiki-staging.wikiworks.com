@@ -22,3 +22,7 @@ VARNISH_SIZE=50m
 BASIC_USERNAME=admin
 # Generate with `openssl passwd -apr1 MY_PASSWORD_RAW`, the password below is `admin`
 BASIC_PASSWORD='$apr1$1pU./GTq$MdRRfwmm.WIyB3CKoAEjm1'
+# Add middleware from compose.staging.auth.yml
+TRAEFIK_EXTRA_MIDDLEWARES=,eyewiki-staging-site-auth
+
+MW_RESTIC_REPOSITORY=

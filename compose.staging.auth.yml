@@ -7,6 +7,4 @@
 services:
   varnish:
     labels:
-      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-site-auth.basicauth.users=${BASIC_USERNAME?Variable not set}:${BASIC_PASSWORD?Variable not set}
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=${COMPOSE_PROJECT_NAME}-site-auth
-
+      - traefik.http.middlewares.eyewiki-staging-site-auth.basicauth.users=${BASIC_USERNAME?Variable not set}:${BASIC_PASSWORD?Variable not set}
