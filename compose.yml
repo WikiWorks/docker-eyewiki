@@ -143,8 +143,6 @@ services:
 
   restic:
     image: ghcr.io/wikiteq/restic-backup-docker:stream
-    profiles:
-        - production
     restart: unless-stopped
     profiles:
         - production
