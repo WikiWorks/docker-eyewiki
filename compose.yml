@@ -14,7 +14,7 @@ services:
       - db_root_password
     volumes:
       - ./_initdb:/docker-entrypoint-initdb.d
-      - ./_data/mysql:/var/lib/mysql
+      - db_data:/var/lib/mysql
 
   web:
     image: ghcr.io/canastawiki/canasta:wikiteq-b785b3d5 # 1.39.10
@@ -40,11 +40,11 @@ services:
       - smtp_password
       - wgSentryDsn
     volumes:
-      - ./_data/mediawiki:/mediawiki
+      - web_data:/mediawiki
+      - images:/mediawiki/images
       - ./extensions:/var/www/mediawiki/w/user-extensions
       - ./skins:/var/www/mediawiki/w/user-skins
       - ./config:/mediawiki/config
-      - ./images:/mediawiki/images
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
@@ -58,7 +58,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - elasticsearch:/usr/share/elasticsearch/data
+      - elasticsearch_data:/usr/share/elasticsearch/data
 
   varnish:
     image: pastakhov/varnish:7.0
@@ -73,7 +73,7 @@ services:
       - VARNISH_STORAGE_KIND=file
     volumes:
        - ./config/varnish:/etc/varnish:ro
-       - ./_data/varnish:/data
+       - varnish_data:/data
     tmpfs:
       - /var/lib/varnish:exec
     labels:
@@ -146,6 +146,8 @@ services:
     profiles:
         - production
     restart: unless-stopped
+    profiles:
+        - production
     depends_on:
         - db
     environment:
@@ -168,7 +170,8 @@ services:
         - db_root_password
         - restic_password
     volumes:
-        - ./images:/data_mediawiki/images:ro
+        - images:/data_mediawiki/images:ro
+        - restic_data:/mnt/restic
         - ./_logs/restic:/var/log
 
 secrets:
@@ -188,7 +191,12 @@ secrets:
     file: ./secrets/wgSentryDsn.txt
 
 volumes:
-  elasticsearch:
+  elasticsearch_data:
+  db_data:
+  web_data:
+  images:
+  varnish_data:
+  restic_data:
 
 networks:
   traefik-public:
