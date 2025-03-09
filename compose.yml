@@ -170,7 +170,7 @@ services:
     volumes:
         - images:/data_mediawiki/images:ro
         - restic_data:/mnt/restic
-        - ./_logs/restic:/var/log
+        - ./logs/restic:/var/log
 
 secrets:
   aws_credentials:
