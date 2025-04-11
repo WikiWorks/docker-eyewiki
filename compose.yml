@@ -156,7 +156,7 @@ services:
         - BACKUP_CRON=0 1 * * 6
         - CHECK_CRON=0 23 * * 5
         # pre-backup script
-        - RESTIC_FORGET_ARGS=${MW_RESTIC_FORGET_ARGS:---prune --keep-weekly 4 --keep-monthly 12 --keep-yearly 1}
+        - RESTIC_FORGET_ARGS=${MW_RESTIC_FORGET_ARGS:---prune --keep-weekly 4 --keep-monthly 12 --keep-yearly 1 --group-by tags}
         - RESTIC_PRE_BACKUP=if [ ! -d "/data" ]; then mkdir /data; fi && tar -C /data_mediawiki/ -zcvf /data/images.tar.gz images && mysqldump -hdb -u$$MW_DB_USER -p$(cat /run/secrets/db_root_password) $$MW_DB_NAME | gzip -c > /data/database.sql.gz
         # post-backup script
         - RESTIC_POST_BACKUP=rm /data/images.tar.gz && rm /data/database.sql.gz
