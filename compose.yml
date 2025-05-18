@@ -124,6 +124,7 @@ services:
     secrets:
       - massmessage_bot_password
     labels:
+      cron.enabled: true
       # At 11:00 every first Friday
       cron.massmessage.schedule: "0 11 * * FRI#1"
       cron.massmessage.command: "bash run.sh MassMessageAPI.php"
@@ -133,7 +134,7 @@ services:
 
   # it uses "Golang Cron expression parser", see https://github.com/aptible/supercronic/tree/master/cronexpr
   cron:
-    image: ghcr.io/wikiteq/cron:20241025-6
+    image: ghcr.io/wikiteq/cron:20250110-ddded6a
     environment:
       - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
       - DEBUG=${CRON_DEBUG:-0}
