@@ -87,7 +87,7 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.entrypoints=websecure
       # Connect the service to LE certs resolver
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.tls.certresolver=le
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file${TRAEFIK_EXTRA_MIDDLEWARES:-}
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file,mediawiki-ddos@file${TRAEFIK_EXTRA_MIDDLEWARES:-}
       # ipDenyList middleware
 #      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-ipDenyList.plugin.denyip.ipDenyList=${IP_DENY_LIST:-127.0.0.254}
       # Redirect www subdomain to base
