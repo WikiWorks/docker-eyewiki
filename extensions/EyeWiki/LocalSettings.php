@@ -137,7 +137,6 @@ $wgContentNamespaces[] = NS_USER; # Needed for PageForms autoedit
 $extensions = [
 #	'ContributorsEyewiki',
 	'EyeWiki',
-# 	'GoogleAPIClient', #formertly used by GoogleAnalyticsMetrics
 	'SemanticDrilldown',
 ];
 foreach ( $extensions as $extension ) {
@@ -163,10 +162,9 @@ $extensionsJSON = [
 	'EditAccount',
 	'Elastica',
 	'ExternalData',
-#	'EyeWikiPreferences',
 #	'GTag',
-	'GoogleAnalyticsMetrics',
 	'HitCounters',
+	'MagicNoCache',
 	'MassMessage',
 	'MassMessageEmail',
 	'MetaMaster',
@@ -302,8 +300,6 @@ wfLoadExtension( 'WikiEditor' );
 wfLoadExtension( 'CodeMirror' );
 wfLoadExtension( 'RightFunctions' );
 
-# GoogleAnalyticsMetrics
-$wgGoogleAnalyticsMetricsAllowed = [ 'pageviews' ];
 $wgLocaltimezone = "America/Los_Angeles"; # Pacific, was America/New_York
 
 $wgGroupPermissions['sysop']['usermerge'] = true;
@@ -319,8 +315,6 @@ $wgSDUUseJobQueue = false;
 
 wfLoadExtension('Variables');
 
-$wgGoogleAnalyticsMetricsExpiry = 3600*24;
-
 $wgWidgetsCompileDir = "$IP/images/widgets/";
 
 # Fixes multiple CVEs https://www.mediawiki.org/wiki/2021-12_security_release/FAQ
@@ -328,8 +322,6 @@ $wgActions['mcrundo'] = false;
 $wgActions['mcrrestore'] = false;
 $wgWhitelistRead = [];
 $wgWhitelistReadRegexp = [];
-
-#!wfLoadExtension('Sentry');
 
 require_once("$IP/extensions/EyeWiki/SkinSettings.php");
 

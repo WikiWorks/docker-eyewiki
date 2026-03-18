@@ -1,11 +1,10 @@
-
 services:
   db:
     image: docker.io/library/mysql:8.0
     command: --default-authentication-plugin=mysql_native_password --log-bin=binlog --expire_logs_days=3 --secure-file-priv=""
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE, fix error mbind: Operation not permitted
-    restart: unless-stopped
+    restart: always
     environment:
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
       - MYSQL_ROOT_HOST=%
@@ -17,8 +16,8 @@ services:
       - db_data:/var/lib/mysql
 
   web:
-    image: ghcr.io/canastawiki/canasta:wikiteq-b785b3d5 # 1.39.10
-    restart: unless-stopped
+    image: ghcr.io/canastawiki/canasta:wikiteq-ee9690c9 # 1.39.11
+    restart: always
     extra_hosts:
       - "gateway.docker.internal:host-gateway"
     depends_on:
@@ -34,11 +33,11 @@ services:
       - PASSWORD_SENDER=eyewiki@aao.org
       - MW_SITE_FQDN
       - APACHE_REMOTE_IP_HEADER=X-Real-Ip # Use IP passed by Traefik, see MEYE-401
+      - PHP_ERROR_REPORTING=${PHP_ERROR_REPORTING:-E_ALL & ~E_USER_DEPRECATED & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE}
     secrets:
       - db_root_password
       - google_key
       - smtp_password
-      - wgSentryDsn
     volumes:
       - web_data:/mediawiki
       - images:/mediawiki/images
@@ -48,7 +47,7 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
-    restart: unless-stopped
+    restart: always
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
@@ -62,7 +61,7 @@ services:
 
   varnish:
     image: pastakhov/varnish:7.0
-    restart: unless-stopped
+    restart: always
     networks:
       - traefik-public
       - default
@@ -87,7 +86,7 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.entrypoints=websecure
       # Connect the service to LE certs resolver
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.tls.certresolver=le
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file,mediawiki-ddos@file${TRAEFIK_EXTRA_MIDDLEWARES:-}
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file${TRAEFIK_EXTRA_MIDDLEWARES:-}
       # ipDenyList middleware
 #      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-ipDenyList.plugin.denyip.ipDenyList=${IP_DENY_LIST:-127.0.0.254}
       # Redirect www subdomain to base
@@ -108,7 +107,7 @@ services:
   # https://hub.docker.com/_/composer
   massmessage:
     image: composer:2.2
-    restart: unless-stopped
+    restart: always
     depends_on:
       - web
     volumes:
@@ -135,6 +134,7 @@ services:
   # it uses "Golang Cron expression parser", see https://github.com/aptible/supercronic/tree/master/cronexpr
   cron:
     image: ghcr.io/wikiteq/cron:20250110-ddded6a
+    restart: always
     environment:
       - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
       - DEBUG=${CRON_DEBUG:-0}
@@ -144,7 +144,7 @@ services:
 
   restic:
     image: ghcr.io/wikiteq/restic-backup-docker:stream
-    restart: unless-stopped
+    restart: always
     profiles:
         - production
     depends_on:
@@ -186,8 +186,6 @@ secrets:
     file: ./secrets/restic_password.txt
   smtp_password:
     file: ./secrets/smtp_password.txt
-  wgSentryDsn:
-    file: ./secrets/wgSentryDsn.txt
 
 volumes:
   elasticsearch_data:

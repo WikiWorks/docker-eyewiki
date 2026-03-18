@@ -24,4 +24,4 @@
 	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/YouTube
 [submodule "extensions/RetainedArticles"]
 	path = extensions/RetainedArticles
-	url = git@github.com:WikiTeq/mediawiki-extension-RetainedArticles.git
+	url = https://github.com/WikiTeq/mediawiki-extension-RetainedArticles.git

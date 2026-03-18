@@ -76,12 +76,6 @@ require_once("$IP/extensions/EyeWiki/LocalSettings.php");
 
 /******************* Core configuration ********************/
 
-$wgSentryDsn = rtrim( file_get_contents( '/run/secrets/wgSentryDsn' ) );
-$wgGoogleAnalyticsMetricsPath = '/run/secrets/google_key';
-$wgGoogleAnalyticsMetricsEmail = '406809334386-o49bi6p7qk3701pm9arvu3elfpkh7t4a@developer.gserviceaccount.com';
-$wgGoogleAnalyticsMetricsViewId = '104606307';
-#$wgGoogleAnalyticsMetricsViewId = '4891091090'; # [MEYE-351]
-
 // Temporary. This may slow things down. Maybe change to only POST later.
 // MEYE-254
 
@@ -137,10 +131,6 @@ class MyProfilerOutput extends ProfilerOutput {
 //$wgProfiler['class'] = 'ProfilerXhprof';
 //$wgProfiler['output'] = [ 'MyProfilerOutput' ];
 
-// MEYE-254
-$wgCacheDirectory = __DIR__ . '/cache';
-$wgLocalisationCacheConf['store'] = 'array';
-
 // We have a separate job runner.
 $wgJobRunRate = 0;
 
@@ -158,19 +148,10 @@ $wgHooks['GetPreferences'][] = static function ( $user, &$preferences ) {
 };
 $wgDefaultUserOptions['newsletter'] = true;
 
-// Uses WikiTeq SMTP server for outgoing emails
-$wgSMTP = [
-	'host' => 'smtp.wikiteq.com',
-	'port'     => 587,
-	'auth'     => true,
-	'username' => 'eyewiki',
-	'password' => rtrim( file_get_contents( '/run/secrets/smtp_password' ) ),
-];
-
 // MEYE-425 Creates meta tag with the content of MediaWiki:Legal-notice-meta
 $wgHooks['BeforePageDisplay'][] = function( OutputPage &$out, Skin &$skin ) {
-    $metaName = 'legal_notice'; 
-    $metaContent = wfMessage( 'legal-notice-meta' )->text(); 
+    $metaName = 'legal_notice';
+    $metaContent = wfMessage( 'legal-notice-meta' )->text();
     $metaTag = "<meta name=\"{$metaName}\" content=\"{$metaContent}\" />";
     $out->addHeadItem( 'legal-notice-meta', $metaTag );
 };
